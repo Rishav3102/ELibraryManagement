@@ -1,0 +1,292 @@
+USE [master]
+GO
+/****** Object:  Database [elibraryDB]    Script Date: 10/29/2024 4:31:17 AM ******/
+CREATE DATABASE [elibraryDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'elibraryDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\elibraryDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'elibraryDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\elibraryDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [elibraryDB] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [elibraryDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [elibraryDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [elibraryDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [elibraryDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [elibraryDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [elibraryDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [elibraryDB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [elibraryDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [elibraryDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [elibraryDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [elibraryDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [elibraryDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [elibraryDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [elibraryDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [elibraryDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [elibraryDB] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [elibraryDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [elibraryDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [elibraryDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [elibraryDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [elibraryDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [elibraryDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [elibraryDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [elibraryDB] SET RECOVERY FULL 
+GO
+ALTER DATABASE [elibraryDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [elibraryDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [elibraryDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [elibraryDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [elibraryDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [elibraryDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [elibraryDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'elibraryDB', N'ON'
+GO
+ALTER DATABASE [elibraryDB] SET QUERY_STORE = OFF
+GO
+USE [elibraryDB]
+GO
+/****** Object:  UserDefinedFunction [dbo].[FUNC_CALCULATE_LATE_FEES]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   FUNCTION [dbo].[FUNC_CALCULATE_LATE_FEES](@NUMBER_OF_DAYS INT)
+RETURNS INT
+AS
+BEGIN
+	RETURN @NUMBER_OF_DAYS*10;
+END;
+GO
+/****** Object:  Table [dbo].[book_issue_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[book_issue_tbl](
+	[member_id] [nvarchar](50) NULL,
+	[member_name] [nvarchar](50) NULL,
+	[book_id] [int] NULL,
+	[issue_date] [nvarchar](50) NULL,
+	[due_date] [nvarchar](50) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[book_master_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[book_master_tbl](
+	[book_id] [int] NOT NULL,
+	[book_name] [nvarchar](max) NULL,
+	[genre] [nvarchar](max) NULL,
+	[author_name] [nvarchar](max) NULL,
+	[publisher_name] [nvarchar](max) NULL,
+	[publisher_date] [nvarchar](50) NULL,
+	[language] [nvarchar](50) NULL,
+	[edition] [nvarchar](max) NULL,
+	[book_cost] [nchar](10) NULL,
+	[no_of_pages] [nchar](10) NULL,
+	[book_description] [nvarchar](max) NULL,
+	[actual_stock] [nchar](10) NULL,
+	[current_stock] [nchar](10) NULL,
+	[book_img_link] [nvarchar](max) NULL,
+ CONSTRAINT [PK__book_mas__490D1AE178784785] PRIMARY KEY CLUSTERED 
+(
+	[book_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_BOOK_ISSUE_BOOK_MASTER_COND]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create view [dbo].[VW_BOOK_ISSUE_BOOK_MASTER_COND]
+as
+
+select book_issue_tbl.* , book_master_tbl.book_name from book_issue_tbl inner join book_master_tbl on book_issue_tbl.book_id = book_master_tbl.book_id
+GO
+/****** Object:  View [dbo].[VW_BOOK_ISSUE_JOIN_BOOK_MASTER]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_BOOK_ISSUE_JOIN_BOOK_MASTER]
+AS
+	SELECT 
+	BI.member_id , BI.member_name , BM.book_name , BI.issue_date , BI.due_date 
+	FROM book_issue_tbl AS BI
+	INNER JOIN
+	book_master_tbl AS BM ON BI.book_id = BM.book_id;
+GO
+/****** Object:  Table [dbo].[member_master_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[member_master_tbl](
+	[full_name] [nvarchar](50) NULL,
+	[dob] [nvarchar](50) NULL,
+	[contact_no] [nvarchar](50) NULL,
+	[email] [nvarchar](50) NULL,
+	[state] [nvarchar](50) NULL,
+	[city] [nvarchar](50) NULL,
+	[pincode] [nvarchar](50) NULL,
+	[full_address] [nvarchar](max) NULL,
+	[member_id] [nvarchar](50) NOT NULL,
+	[password] [varchar](255) NULL,
+	[account_status] [nvarchar](50) NULL,
+	[userKey] [varchar](255) NULL,
+	[loginFirstTime] [int] NULL,
+ CONSTRAINT [PK__member_m__B29B85343A009535] PRIMARY KEY CLUSTERED 
+(
+	[member_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  UserDefinedFunction [dbo].[FUNC_FIND_LATE_FEE_CANDIDATES]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   FUNCTION [dbo].[FUNC_FIND_LATE_FEE_CANDIDATES]()
+RETURNS TABLE
+AS
+RETURN(
+	SELECT  VW_BOOK_ISSUE_JOIN_BOOK_MASTER.* , member_master_tbl.email, LATE_FEES = dbo.FUNC_CALCULATE_LATE_FEES(DATEDIFF(DAY , due_date , GETDATE())) FROM VW_BOOK_ISSUE_JOIN_BOOK_MASTER  
+	INNER JOIN member_master_tbl ON VW_BOOK_ISSUE_JOIN_BOOK_MASTER.member_id = member_master_tbl.member_id
+	WHERE VW_BOOK_ISSUE_JOIN_BOOK_MASTER.due_date < CONVERT(DATE , GETDATE())
+)
+GO
+/****** Object:  Table [dbo].[admin_login_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[admin_login_tbl](
+	[username] [nvarchar](50) NOT NULL,
+	[password] [nvarchar](50) NULL,
+	[full_name] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[author_master_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[author_master_tbl](
+	[author_id] [nvarchar](20) NOT NULL,
+	[author_name] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[author_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[LOG_TBL_ISSUE_RETURN]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LOG_TBL_ISSUE_RETURN](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[LOG_DETAILS] [varchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PAGES]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PAGES](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[PAGE_NAME] [varchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[publisher_master_tbl]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[publisher_master_tbl](
+	[publisher_id] [nchar](10) NOT NULL,
+	[publisher_name] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[publisher_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_DELETE_DEFAULTERS]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[SP_DELETE_DEFAULTERS]
+@BOOK_NAME VARCHAR(255),
+@MEMBER_ID VARCHAR(255)
+AS
+BEGIN
+	 DECLARE @BOOK_ID INT;
+	 select @BOOK_ID = book_id from book_master_tbl where book_name = @BOOK_NAME
+
+	 DELETE FROM book_issue_tbl WHERE book_id = @BOOK_ID AND member_id = @MEMBER_ID
+
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[SP_FIND_LATE_FEE_CANDIDATES]    Script Date: 10/29/2024 4:31:17 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[SP_FIND_LATE_FEE_CANDIDATES]
+AS
+BEGIN
+	 SELECT * FROM FUNC_FIND_LATE_FEE_CANDIDATES();
+END;
+GO
+USE [master]
+GO
+ALTER DATABASE [elibraryDB] SET  READ_WRITE 
+GO
