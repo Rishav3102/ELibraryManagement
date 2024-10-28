@@ -1,0 +1,142 @@
+﻿
+body{
+    overflow-x:hidden;
+}
+.footerlinks {
+    color:#ffffff;
+    text-decoration : none !important;
+}
+.footerlinks:hover{
+    color : #ffd800;
+}
+
+#footer1{
+    background : #762b00;
+}
+#footer2{
+    background:#531f00;
+}
+.text-justify {
+    text-align: justify;
+}
+
+.formGroupCustom {
+    margin: 1.3rem;
+}
+
+.btnBlockCustom {
+    width: 100%;
+    margin: auto;
+}
+
+a{
+    text-decoration:none;
+}
+.row{
+    margin : 1.1rem;
+}
+.badge{
+    background-color:rgb(13,110,253);
+    color:white;
+}
+#anchorBookInventory{
+   color:black;
+   text-decoration:none;
+   cursor:pointer;
+}
+#bookNameTextBox {
+    width: 100%;
+    height: 40%;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#bookDescriptionTextBox {
+    width: 100%;
+    height: 250px;
+    resize: none;
+    margin-top: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: auto;
+}
+
+#buttonFindDescription{
+    height:50px;
+    width:300px;
+}
+
+#bookGptContainer{
+    margin-block :30px;
+}
+#bookGptCard{
+    height :600px;
+}
+#SearchBarContainer {
+    width: 20rem;
+}
+#GlobalSearchInput {
+    width: 20rem;
+}
+#suggestions {
+    position: absolute;
+    top: 100%;
+    width:100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    z-index: 999;
+    padding-left: 0.8rem;
+}
+
+#ChartsContainer{
+    
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center
+}
+#myChart1{
+    width:40rem;
+    height:40rem;
+    margin:2rem;
+}
+#myChart2 {
+    width: 40rem;
+    height: 40rem;
+    margin: 2rem;
+}
+
+.custom-div {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    min-height: 100px; /* Set a minimum height to allow for text input */
+    background-color: #fff; /* Set a white background */
+    outline: none; /* Remove the default outline on focus */
+    cursor : pointer;
+}
+
+/* Style the labels */
+.modal-body label {
+    font-weight: bold;
+}
+
+/* Optional: Add some spacing and alignment for the columns */
+.modal-body .col-md-6 {
+    padding: 10px;
+}
